@@ -8,9 +8,7 @@ bl_info = {
     "category": "3D View",
 }
 
-
 import bpy
-import bpy.app.translations as translations
 
 # Pivot Point 一覧（Blender内部名, 表示名, 説明）
 pivot_points = [
@@ -20,7 +18,6 @@ pivot_points = [
     ("MEDIAN_POINT", "Median Point", ""),
     ("ACTIVE_ELEMENT", "Active Element", ""),
 ]
-
 
 # ----------------------------------------------------
 # Scene プロパティ登録
@@ -33,7 +30,6 @@ def clear_properties():
     for pivot, _, _ in pivot_points:
         if hasattr(bpy.types.Scene, f"pivot_{pivot}"):
             delattr(bpy.types.Scene, f"pivot_{pivot}")
-
 
 # ----------------------------------------------------
 # Pivot Point 切り替えオペレーター
@@ -71,7 +67,6 @@ class PIVOT_OT_next_point(bpy.types.Operator):
         print(f"Pivot Point を {next_pivot} に変更")
         return {'FINISHED'}
 
-
 # ----------------------------------------------------
 # Ctrl+Shift+ピリオド で登録
 # ----------------------------------------------------
@@ -102,7 +97,6 @@ class PIVOT_OT_register_shortcut(bpy.types.Operator):
 
         return {'FINISHED'}
 
-
 # ----------------------------------------------------
 # UI パネル
 # ----------------------------------------------------
@@ -116,10 +110,9 @@ class PIVOT_PT_panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        tr = bpy.app.translations.pgettext
 
-        box1 = layout.box()
-        box1.label(text="Pivot Point switching targets")
+        box = layout.box()
+        box.label(text="Switch Pivot Point")
 
         icon_map = {
             "BOUNDING_BOX_CENTER": "PIVOT_BOUNDBOX",
@@ -130,30 +123,14 @@ class PIVOT_PT_panel(bpy.types.Panel):
         }
 
         for pivot, label, _ in pivot_points:
-            box1.prop(scene, f"pivot_{pivot}", text=label, icon=icon_map.get(pivot, 'NONE'))
+            box.prop(scene, f"pivot_{pivot}", text=label, icon=icon_map.get(pivot, 'NONE'))
 
-        box1.separator()
-        box2 = box1.box()
-        box2.operator("view3d.pivot_next_point", text=tr("Next Pivot Point"))
+        layout.separator()
+        layout.operator("view3d.pivot_next_point", text="Next Pivot Point")
 
-        box3 = layout.box()
-        box3.separator()
-        box3.label(text="Set Shortcut")
-        box3.operator("pivot.register_shortcut", text="[Ctrl+Shift+.]")
-
-
-# ----------------------------------------------------
-# 翻訳辞書
-# ----------------------------------------------------
-translation_dict = {
-    "ja_JP": {
-        ("*", "Pivot Point Switcher"): "ピボットポイント切り替え",
-        ("*", "Next Pivot Point"): "次のピボットポイントへ切り替え",
-        ("*", "Set Shortcut"): "ショートカット設定",
-        ("*", "Pivot Point switching targets"): "切り替え対象",
-    },
-}
-
+        layout.separator()
+        layout.label(text="Set Shortcut")
+        layout.operator("pivot.register_shortcut", text="[Ctrl+Shift+.]")
 
 # ----------------------------------------------------
 # 登録 / 解除
@@ -164,13 +141,11 @@ def register():
     init_properties()
     for cls in classes:
         bpy.utils.register_class(cls)
-    translations.register(__name__, translation_dict)
 
 def unregister():
     clear_properties()
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-    translations.unregister(__name__)
 
 if __name__ == "__main__":
     register()
