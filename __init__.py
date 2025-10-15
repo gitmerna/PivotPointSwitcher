@@ -134,12 +134,15 @@ class PIVOT_PT_panel(bpy.types.Panel):
 
         box1.separator()
         box2 = box1.box()
-        box2.operator("view3d.pivot_next_point", text=tr("Next Pivot Point"))
+        col = box2.column(align=True)
+        col.label(text="You can assign a shortcut")
+        col.label(text="from the right-click menu on the button")
+        col.operator("view3d.pivot_next_point", text=tr("Next Pivot Point"))
 
         box3 = layout.box()
-        box3.separator()
-        box3.label(text="Set Shortcut")
-        box3.operator("pivot.register_shortcut", text="[Ctrl+Shift+.]")
+        col2 = box3.column(align=True)
+        col2.label(text="Set Shortcut")
+        col2.operator("pivot.register_shortcut", text="[Ctrl+Shift+.]")
 
 
 # ----------------------------------------------------
@@ -151,6 +154,8 @@ translation_dict = {
         ("*", "Next Pivot Point"): "次のピボットポイントへ切り替え",
         ("*", "Set Shortcut"): "ショートカット設定",
         ("*", "Pivot Point switching targets"): "切り替え対象",
+        ("*", "You can assign a shortcut"): "ボタン上で右クリックメニューから",
+        ("*", "from the right-click menu on the button"): "ショートカットを登録できます",
     },
 }
 
